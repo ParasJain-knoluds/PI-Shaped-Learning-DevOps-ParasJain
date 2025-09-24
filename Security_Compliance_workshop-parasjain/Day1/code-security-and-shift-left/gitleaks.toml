@@ -1,0 +1,4 @@
+[[rules]]
+description = "Generic password assignment"
+regex = '''(?i)password\s*[:=]\s*["'][^"']+["']'''
+tags = ["key", "password", "secret"]
