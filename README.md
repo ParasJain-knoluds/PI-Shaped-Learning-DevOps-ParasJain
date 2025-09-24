@@ -16,7 +16,15 @@ Key objectives:
 ### 1. Initial React App with Hardcoded Secret
 A simple React app (`src/App.js`) was created with a **hardcoded API key** for demo purposes:
 
-### command use to check gitleaks
+### 2. Install Gitleaks
+```
+curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+| grep "browser_download_url.*linux.*tar.gz" \
+| cut -d '"' -f 4 \
+| wget -qi - && tar -xvf gitleaks-*.tar.gz
+sudo mv gitleaks /usr/local/bin/
+```
+### 3.Command use to check gitleaks
 ```gitleaks detect --no-git --report-format json --report-path gitleaks_report.json```
 ```jsx
 // ❌ Insecure code (before fix)
@@ -47,6 +55,12 @@ After running Git Leaks scan, it successfully detects the hardcoded
 |Secret detected in multiple files or commits| Identified and removed from all occurrences, used .env files  |
 | Ensuring .env not accidentally committed  |  Added .env to .gitignore and verified clean repo with Gitleaks |
 | Understanding Gitleaks config & false positives	  |  Used default rules and excluded non-sensitive files |
+
+## Shift-Lift Benefits
+- Early detection of secrets reduces risk of exposure in production.
+- Encourages secure coding practices among developers.
+- Integrates security into the development workflow, promoting a DevSecOps culture.
+- Reduces remediation costs by addressing issues early in the SDLC.
 
 ## Scenario-Based Questions & Answers
 
