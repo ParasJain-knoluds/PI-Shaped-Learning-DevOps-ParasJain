@@ -16,6 +16,7 @@ jobs:
 
       # Step 2: Install dependencies and start React app
       - name: Start application
+        working-directory: Security_Compliance_workshop-parasjain/Day2/vulnerable-react-app
         run: |
           npm install
           npm start &
