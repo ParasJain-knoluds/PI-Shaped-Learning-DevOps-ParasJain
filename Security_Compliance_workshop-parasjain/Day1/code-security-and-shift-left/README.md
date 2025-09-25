@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# 🔐 Introduction to DevSecOps & Shift-Left Security
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 Project Overview
+This project demonstrates **shift-left security principles** using a simple React application.  
+Key objectives:
+- Detect secrets in code using **Gitleaks**
+- Remove secrets and secure them with environment variables
+- Re-scan to ensure the repo is clean
+- Deploy the React app securely inside a **Docker container**
+- Document learnings and best practices
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🛠️ Setup & Steps
 
-### `npm start`
+### 1. Initial React App with Hardcoded Secret
+A simple React app (`src/App.js`) was created with a **hardcoded API key** for demo purposes:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. Install Gitleaks
+```
+curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+| grep "browser_download_url.*linux.*tar.gz" \
+| cut -d '"' -f 4 \
+| wget -qi - && tar -xvf gitleaks-*.tar.gz
+sudo mv gitleaks /usr/local/bin/
+```
+### 3.Command use to check gitleaks
+```gitleaks detect --no-git --report-format json --report-path gitleaks_report.json```
+```jsx
+// ❌ Insecure code (before fix)
+const API_KEY = "REACT_DEMO_SECRET_12345";
+```
+Before Git Leaks scan, the repo contains this hardcoded secret.
+![BeforeRemoveGitLeaks.png](Security_Compliance_workshop-parasjain/Day1/code-security-and-shift-left/Screenshots/BeforeRemoveGitLeaks.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Remove the hardcoded secret and use environment variables
+* Checked Gitleaks output for detected secrets.
+* Removed hardcoded secrets and replaced them with environment variables:
+* Verified .env file is in .gitignore to avoid accidental commits.
 
-### `npm test`
+After running Git Leaks scan, it successfully detects the hardcoded
+![AfterRemoveGitLeaks.png](Security_Compliance_workshop-parasjain/Day1/code-security-and-shift-left/Screenshots/AfterRemoveGitLeaks.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Working React App with Environment Variables
+![locallyWorkingApplication.png](Security_Compliance_workshop-parasjain/Day1/code-security-and-shift-left/Screenshots/locallyWorkingApplication.png)
 
-### `npm run build`
+## Findings
+* Git Leaks detected the hardcoded secret in the initial scan.
+* After removing the hardcoded secret and using environment variables, a re-scan with Git Leaks showed no detected secrets, confirming the repo is now clean.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Challenges Faced & Resolutions
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+|  Challenge |  Resolution |
+|---|---|
+|Secret detected in multiple files or commits| Identified and removed from all occurrences, used .env files  |
+| Ensuring .env not accidentally committed  |  Added .env to .gitignore and verified clean repo with Gitleaks |
+| Understanding Gitleaks config & false positives	  |  Used default rules and excluded non-sensitive files |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Shift-Lift Benefits
+- Early detection of secrets reduces risk of exposure in production.
+- Encourages secure coding practices among developers.
+- Integrates security into the development workflow, promoting a DevSecOps culture.
+- Reduces remediation costs by addressing issues early in the SDLC.
 
-### `npm run eject`
+## Scenario-Based Questions & Answers
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Q1. Explain the concept of shift-left security and why it is important in DevSecOps.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Ans. Shift-left security involves integrating security practices early in the software development lifecycle (SDLC). It is important in DevSecOps because it helps identify and mitigate security vulnerabilities before they reach production, reducing the risk of breaches and ensuring a more secure application.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Q2. How does detecting secrets early in the CI/CD pipeline prevent production vulnerabilities?
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Ans. Detecting secrets early prevents them from being exposed in the codebase, which could lead to unauthorized access if the code is leaked. By identifying and removing secrets before deployment, we reduce the risk of security breaches and ensure that sensitive information is handled securely.
 
-## Learn More
+Q3. What strategies can be used to store secrets securely instead of hardcoding them?
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Ans. Secrets can be stored securely using environment variables, secret management tools (like HashiCorp Vault, AWS Secrets Manager), or encrypted configuration files. These methods ensure that secrets are not exposed in the codebase and can be managed and rotated easily.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Q4. Describe a situation where a secret could still be exposed even after scanning, and how to prevent it.
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ans. A secret could still be exposed if it is committed in a branch that is not scanned or if the scanning tool has false negatives. To prevent this, ensure all branches are scanned, use multiple scanning tools for redundancy, and implement strict code review processes to catch any missed secrets.
